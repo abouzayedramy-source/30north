@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>30 North — Specialty Coffee</title>
+<meta name="description" content="30 North is a premium specialty coffee experience crafted for those who appreciate quality, atmosphere, and culture."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --black: #0a0906;
+  --dark: #111009;
+  --brown-deep: #1e1510;
+  --brown-mid: #2e200f;
+  --brown: #5c3d1e;
+  --gold: #b8935a;
+  --gold-light: #d4aa70;
+  --gold-pale: #e8d5b0;
+  --cream: #f0e8d5;
+  --cream-light: #f8f3ea;
+  --muted: #8a7a6a;
+  --muted-light: #a89880;
+  --white: #faf7f2;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--black);
+  color:var(--cream);
+  font-family:'DM Sans',sans-serif;
+  font-weight:300;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CUSTOM CURSOR */
+#cursor{
+  position:fixed;width:10px;height:10px;
+  background:var(--gold);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .3s,height .3s,background .3s;
+  mix-blend-mode:difference;
+}
+#cursor-ring{
+  position:fixed;width:38px;height:38px;
+  border:1px solid rgba(184,147,90,0.5);
+  border-radius:50%;pointer-events:none;
+  z-index:9998;transform:translate(-50%,-50%);
+  transition:all .15s ease;
+}
+body:hover #cursor-ring{opacity:1}
+
+/* LOADER */
+#loader{
+  position:fixed;inset:0;background:var(--black);
+  z-index:10000;display:flex;align-items:center;
+  justify-content:center;flex-direction:column;
+  gap:2rem;
+}
+#loader-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.5rem,6vw,5rem);
+  font-weight:300;letter-spacing:.3em;
+  color:var(--gold);opacity:0;
+  animation:fadeIn 1s .3s forwards;
+}
+#loader-bar{
+  width:200px;height:1px;background:var(--brown-mid);
+  position:relative;overflow:hidden;
+}
+#loader-bar::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,var(--gold),var(--gold-light));
+  transform:translateX(-100%);
+  animation:loadBar 1.8s .6s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes loadBar{to{transform:translateX(0)}}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes fadeOut{to{opacity:0;pointer-events:none}}
+
+/* PROGRESS BAR */
+#progress{
+  position:fixed;top:0;left:0;height:2px;
+  background:linear-gradient(90deg,var(--brown),var(--gold));
+  z-index:1000;width:0%;transition:width .1s;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  padding:1.5rem 3rem;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:500;
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+}
+nav.scrolled{
+  padding:1rem 3rem;
+  background:rgba(10,9,6,.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(184,147,90,.1);
+}
+.nav-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem;font-weight:400;
+  letter-spacing:.25em;color:var(--gold);
+  text-decoration:none;
+}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{
+  font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--cream-light);text-decoration:none;
+  font-weight:400;opacity:.75;
+  transition:opacity .3s,color .3s;
+  position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;
+  height:1px;background:var(--gold);
+  transform:scaleX(0);transition:transform .3s;
+}
+.nav-links a:hover{opacity:1;color:var(--gold)}
+.nav-links a:hover::after{transform:scaleX(1)}
+.nav-cta{
+  font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;
+  padding:.65rem 1.6rem;border:1px solid var(--gold);
+  color:var(--gold);background:transparent;cursor:pointer;
+  transition:all .35s;font-family:'DM Sans',sans-serif;
+  font-weight:400;text-decoration:none;
+}
+.nav-cta:hover{background:var(--gold);color:var(--black)}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.nav-hamburger span{width:24px;height:1px;background:var(--cream);display:block;transition:all .3s}
+
+/* HERO */
+#hero{
+  height:100vh;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 60% 40%, rgba(92,61,30,.35) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 80% at 20% 70%, rgba(30,21,16,.9) 0%, transparent 60%),
+    linear-gradient(160deg, #0f0a06 0%, #1a1208 40%, #0a0906 100%);
+}
+/* Cinematic film grain */
+.hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.4;pointer-events:none;
+}
+.hero-coffee-visual{
+  position:absolute;right:-5%;bottom:0;width:65%;height:95%;
+  opacity:.18;
+  background:radial-gradient(ellipse 60% 80% at 55% 60%, rgba(184,147,90,.6), transparent 70%);
+}
+
+/* Abstract coffee cup illustration */
+.hero-cup{
+  position:absolute;right:8%;bottom:5%;width:380px;height:480px;
+  opacity:.12;pointer-events:none;
+}
+
+/* Steam */
+.steam-wrap{position:absolute;right:24%;bottom:35%;pointer-events:none}
+.steam{
+  width:6px;height:60px;
+  border-radius:50%;
+  background:linear-gradient(to top, rgba(232,213,176,0),rgba(232,213,176,.35),rgba(232,213,176,0));
+  position:absolute;bottom:0;
+  animation:steamRise 3s ease-in-out infinite;
+  filter:blur(3px);
+}
+.steam:nth-child(1){left:0;animation-delay:0s}
+.steam:nth-child(2){left:14px;animation-delay:.8s;height:80px}
+.steam:nth-child(3){left:28px;animation-delay:1.6s;height:50px}
+@keyframes steamRise{
+  0%{transform:translateY(0) scaleX(1);opacity:0}
+  20%{opacity:1}
+  100%{transform:translateY(-120px) scaleX(2.5);opacity:0}
+}
+
+.hero-content{
+  position:relative;z-index:2;
+  text-align:center;padding:0 1.5rem;
+  max-width:900px;
+}
+.hero-eyebrow{
+  font-size:.72rem;letter-spacing:.4em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:2rem;opacity:0;
+  animation:slideUp .8s 2s cubic-bezier(.4,0,.2,1) forwards;
+}
+.hero-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3.5rem,9vw,8.5rem);
+  font-weight:300;line-height:1;
+  letter-spacing:-.02em;margin-bottom:2rem;
+  color:var(--white);opacity:0;
+  animation:slideUp 1s 2.2s cubic-bezier(.4,0,.2,1) forwards;
+}
+.hero-title em{
+  font-style:italic;color:var(--gold-light);
+  display:block;
+}
+.hero-sub{
+  font-size:clamp(.9rem,1.5vw,1.05rem);
+  font-weight:300;line-height:1.8;
+  color:var(--muted-light);max-width:540px;
+  margin:0 auto 3rem;opacity:0;
+  animation:slideUp .8s 2.5s cubic-bezier(.4,0,.2,1) forwards;
+}
+.hero-btns{
+  display:flex;gap:1.5rem;justify-content:center;
+  flex-wrap:wrap;opacity:0;
+  animation:slideUp .8s 2.8s cubic-bezier(.4,0,.2,1) forwards;
+}
+.btn-primary{
+  padding:.9rem 2.8rem;
+  background:var(--gold);color:var(--black);
+  font-family:'DM Sans',sans-serif;
+  font-size:.78rem;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;
+  border:none;cursor:pointer;
+  transition:all .4s cubic-bezier(.4,0,.2,1);
+  text-decoration:none;display:inline-block;
+  position:relative;overflow:hidden;
+}
+.btn-primary::before{
+  content:'';position:absolute;inset:0;
+  background:var(--gold-light);
+  transform:translateX(-101%);transition:transform .4s cubic-bezier(.4,0,.2,1);
+}
+.btn-primary:hover::before{transform:translateX(0)}
+.btn-primary span{position:relative;z-index:1}
+.btn-ghost{
+  padding:.9rem 2.8rem;
+  background:transparent;color:var(--cream);
+  font-family:'DM Sans',sans-serif;
+  font-size:.78rem;font-weight:400;
+  letter-spacing:.18em;text-transform:uppercase;
+  border:1px solid rgba(240,232,213,.3);cursor:pointer;
+  transition:all .4s;text-decoration:none;display:inline-block;
+}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+.hero-scroll{
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.8rem;
+  opacity:0;animation:fadeIn .8s 3.3s forwards;
+}
+.hero-scroll span{
+  font-size:.65rem;letter-spacing:.35em;text-transform:uppercase;
+  color:var(--muted);
+}
+.scroll-line{
+  width:1px;height:50px;background:linear-gradient(to bottom,var(--gold),transparent);
+  animation:scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse{
+  0%,100%{opacity:.4;transform:scaleY(.8)}
+  50%{opacity:1;transform:scaleY(1)}
+}
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* SECTION COMMONS */
+section{padding:7rem 0}
+.container{max-width:1200px;margin:0 auto;padding:0 3rem}
+.section-label{
+  font-size:.68rem;letter-spacing:.4em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:1rem;
+}
+.section-label::before{
+  content:'';width:40px;height:1px;background:var(--gold);
+}
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  font-weight:300;line-height:1.1;
+  color:var(--white);
+}
+.section-title em{font-style:italic;color:var(--gold-light)}
+
+/* Reveal animation */
+.reveal{
+  opacity:0;transform:translateY(40px);
+  transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1);
+}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.15s}
+.reveal-delay-2{transition-delay:.3s}
+.reveal-delay-3{transition-delay:.45s}
+.reveal-delay-4{transition-delay:.6s}
+
+/* ABOUT */
+#about{background:var(--dark)}
+.about-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;
+  align-items:center;
+}
+.about-visual{
+  position:relative;height:580px;
+}
+.about-img-main{
+  position:absolute;top:0;left:0;right:10%;bottom:10%;
+  background:linear-gradient(135deg,var(--brown-deep),var(--brown-mid));
+  overflow:hidden;
+}
+.about-img-main::after{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 40% 60%, rgba(184,147,90,.2), transparent 60%),
+    linear-gradient(180deg,rgba(10,9,6,.2),rgba(10,9,6,.5));
+}
+/* Coffee circle illustration */
+.coffee-circle{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle, #2e200f 30%, #1a1208 60%, #0f0a06 100%);
+  border:1px solid rgba(184,147,90,.3);
+  box-shadow:0 0 60px rgba(184,147,90,.15);
+}
+.coffee-circle::after{
+  content:'';position:absolute;top:15%;left:15%;right:15%;bottom:15%;
+  border-radius:50%;
+  background:radial-gradient(circle at 40% 35%, #4a2e12, #1e1510);
+  border:1px solid rgba(184,147,90,.2);
+}
+.about-img-accent{
+  position:absolute;bottom:0;right:0;width:55%;height:45%;
+  background:linear-gradient(135deg,#1e1510,#2e200f);
+  border:1px solid rgba(184,147,90,.1);
+  display:flex;align-items:center;justify-content:center;
+}
+.about-img-accent-inner{
+  text-align:center;
+}
+.about-img-accent-num{
+  font-family:'Cormorant Garamond',serif;
+  font-size:4rem;font-weight:300;color:var(--gold);
+  line-height:1;
+}
+.about-img-accent-label{
+  font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--muted);margin-top:.5rem;
+}
+.about-dot{
+  position:absolute;top:-1.5rem;right:15%;
+  width:6px;height:6px;border-radius:50%;background:var(--gold);
+}
+.about-text p{
+  color:var(--muted-light);line-height:1.9;margin-bottom:1.5rem;
+  font-weight:300;font-size:.95rem;
+}
+.about-text p:first-of-type{
+  font-size:1.15rem;color:var(--cream-light);font-weight:300;
+}
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:2rem;margin-top:3rem;
+  padding-top:3rem;
+  border-top:1px solid rgba(184,147,90,.15);
+}
+.stat-item{}
+.stat-num{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.8rem;font-weight:300;color:var(--gold);line-height:1;
+}
+.stat-suffix{font-size:1.4rem;color:var(--gold-pale)}
+.stat-label{
+  font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin-top:.5rem;
+}
+
+/* MARQUEE */
+.marquee-section{
+  background:var(--gold);overflow:hidden;
+  padding:1.1rem 0;
+}
+.marquee-track{
+  display:flex;gap:0;white-space:nowrap;
+  animation:marquee 20s linear infinite;
+}
+.marquee-item{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1rem;font-weight:400;font-style:italic;
+  color:var(--black);letter-spacing:.1em;
+  padding:0 3rem;
+  display:flex;align-items:center;gap:3rem;
+}
+.marquee-item::after{content:'✦';font-style:normal;font-size:.6rem}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* MENU */
+#menu{background:var(--black)}
+.menu-header{text-align:center;margin-bottom:4rem}
+.menu-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5px;background:rgba(184,147,90,.08);
+}
+.menu-card{
+  background:var(--black);padding:2.5rem;
+  position:relative;overflow:hidden;
+  cursor:pointer;
+  transition:all .4s cubic-bezier(.4,0,.2,1);
+}
+.menu-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(184,147,90,.08),rgba(184,147,90,.02));
+  opacity:0;transition:opacity .4s;
+}
+.menu-card:hover{transform:translateY(-4px)}
+.menu-card:hover::before{opacity:1}
+.menu-card-top{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;margin-bottom:1.5rem;
+}
+.menu-icon{
+  width:48px;height:48px;
+  border:1px solid rgba(184,147,90,.2);
+  border-radius:50%;display:flex;align-items:center;
+  justify-content:center;
+  transition:border-color .4s,background .4s;
+  font-size:1.1rem;
+}
+.menu-card:hover .menu-icon{
+  border-color:var(--gold);background:rgba(184,147,90,.1);
+}
+.badge{
+  font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;
+  padding:.3rem .8rem;
+  background:rgba(184,147,90,.12);
+  color:var(--gold);
+  border:1px solid rgba(184,147,90,.2);
+}
+.menu-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;font-weight:400;color:var(--white);
+  margin-bottom:.5rem;
+}
+.menu-desc{
+  font-size:.82rem;color:var(--muted);line-height:1.7;
+  margin-bottom:1.5rem;font-weight:300;
+}
+.menu-footer{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.menu-price{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem;font-weight:300;color:var(--gold);
+}
+.menu-order{
+  font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);
+  display:flex;align-items:center;gap:.5rem;
+  transition:color .3s;
+}
+.menu-card:hover .menu-order{color:var(--gold)}
+.menu-order::after{
+  content:'→';transition:transform .3s;
+}
+.menu-card:hover .menu-order::after{transform:translateX(4px)}
+
+/* TESTIMONIALS */
+#reviews{background:var(--dark)}
+.reviews-header{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;margin-bottom:4rem}
+.reviews-tagline{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1rem;font-style:italic;
+  color:var(--muted);line-height:1.8;
+}
+.slider-wrap{position:relative;overflow:hidden}
+.slider-track{
+  display:flex;gap:2rem;
+  transition:transform .7s cubic-bezier(.4,0,.2,1);
+}
+.review-card{
+  min-width:calc(50% - 1rem);
+  background:rgba(30,21,16,.6);
+  border:1px solid rgba(184,147,90,.1);
+  padding:2.8rem;
+  position:relative;
+  backdrop-filter:blur(10px);
+  flex-shrink:0;
+}
+.review-card::before{
+  content:'"';
+  font-family:'Cormorant Garamond',serif;
+  font-size:8rem;font-weight:300;
+  color:rgba(184,147,90,.1);
+  position:absolute;top:-1rem;left:1.5rem;
+  line-height:1;pointer-events:none;
+}
+.review-stars{
+  display:flex;gap:3px;margin-bottom:1.5rem;
+}
+.star{color:var(--gold);font-size:.85rem}
+.review-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.2rem;font-weight:300;font-style:italic;
+  color:var(--cream-light);line-height:1.8;
+  margin-bottom:2rem;
+}
+.review-author{
+  display:flex;align-items:center;gap:1rem;
+}
+.author-avatar{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--brown),var(--brown-mid));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem;color:var(--gold);
+  flex-shrink:0;border:1px solid rgba(184,147,90,.2);
+}
+.author-name{font-size:.88rem;font-weight:400;color:var(--cream)}
+.author-role{font-size:.73rem;color:var(--muted);margin-top:.2rem;letter-spacing:.05em}
+.slider-controls{
+  display:flex;gap:1rem;margin-top:2.5rem;align-items:center;
+}
+.slider-btn{
+  width:44px;height:44px;border:1px solid rgba(184,147,90,.25);
+  background:transparent;color:var(--gold);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:1rem;transition:all .3s;
+}
+.slider-btn:hover{background:var(--gold);color:var(--black);border-color:var(--gold)}
+.slider-dots{display:flex;gap:.6rem;margin-left:auto}
+.dot{
+  width:24px;height:2px;background:rgba(184,147,90,.25);
+  cursor:pointer;transition:background .3s;
+}
+.dot.active{background:var(--gold)}
+
+/* GALLERY */
+#gallery{background:var(--black);overflow:hidden}
+.gallery-header{text-align:center;margin-bottom:4rem}
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  grid-template-rows:repeat(3,200px);
+  gap:4px;
+}
+.g-item{
+  overflow:hidden;position:relative;cursor:pointer;
+}
+.g-item::after{
+  content:'';position:absolute;inset:0;
+  background:rgba(10,9,6,0);
+  transition:background .4s;
+}
+.g-item:hover::after{background:rgba(10,9,6,.3)}
+.g-bg{
+  width:100%;height:100%;
+  transition:transform .7s cubic-bezier(.4,0,.2,1);
+}
+.g-item:hover .g-bg{transform:scale(1.06)}
+.g-item:nth-child(1){grid-column:span 5;grid-row:span 2}
+.g-item:nth-child(2){grid-column:span 4;grid-row:span 1}
+.g-item:nth-child(3){grid-column:span 3;grid-row:span 1}
+.g-item:nth-child(4){grid-column:span 4;grid-row:span 1}
+.g-item:nth-child(5){grid-column:span 3;grid-row:span 1}
+.g-item:nth-child(6){grid-column:span 4;grid-row:span 1}
+.g-item:nth-child(7){grid-column:span 8;grid-row:span 1}
+
+/* gallery backgrounds - generated abstract coffee visuals */
+.gb1{background:radial-gradient(ellipse at 40% 40%, #3d2410 0%, #1e1510 40%, #0f0a06 100%)}
+.gb2{background:radial-gradient(circle at 50% 50%, #2a1a09, #0f0a06);display:flex;align-items:center;justify-content:center}
+.gb3{background:linear-gradient(135deg, #1a1208 0%, #2e1f0e 50%, #1e1510 100%)}
+.gb4{background:radial-gradient(ellipse at 30% 70%, #3a2510, #1a1208)}
+.gb5{background:linear-gradient(45deg, #0f0a06, #2a1a0a)}
+.gb6{background:radial-gradient(circle at 70% 30%, #2e200f, #111009)}
+.gb7{background:linear-gradient(160deg, #1e1510, #3d2410 30%, #1e1510 70%, #0f0a06)}
+
+/* Coffee art for gallery items */
+.g-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.cup-art{
+  width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle at 38% 35%, #5c3d1e, #1e1510);
+  border:1px solid rgba(184,147,90,.3);
+  box-shadow:0 0 30px rgba(184,147,90,.1);
+}
+
+/* LOCATION */
+#location{background:var(--dark)}
+.location-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.map-box{
+  height:420px;
+  background:linear-gradient(135deg,#111009,#1e1510);
+  border:1px solid rgba(184,147,90,.12);
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.map-box::before{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,rgba(184,147,90,.04) 0px,transparent 1px,transparent 40px,rgba(184,147,90,.04) 41px),
+    repeating-linear-gradient(90deg,rgba(184,147,90,.04) 0px,transparent 1px,transparent 40px,rgba(184,147,90,.04) 41px);
+}
+.map-pin{
+  position:relative;z-index:1;text-align:center;
+}
+.pin-circle{
+  width:60px;height:60px;border-radius:50%;
+  border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 1rem;
+  animation:pulse 2.5s ease-in-out infinite;
+  position:relative;
+}
+.pin-circle::before{
+  content:'';position:absolute;inset:-8px;
+  border-radius:50%;border:1px solid rgba(184,147,90,.25);
+  animation:pulse 2.5s ease-in-out infinite .4s;
+}
+.pin-icon{font-size:1.4rem}
+.pin-label{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem;color:var(--gold);
+}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.8}}
+.contact-form{display:flex;flex-direction:column;gap:1.2rem}
+.form-group{position:relative}
+.form-label{
+  font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:.5rem;display:block;
+}
+.form-input{
+  width:100%;padding:.9rem 1.2rem;
+  background:rgba(30,21,16,.5);
+  border:1px solid rgba(184,147,90,.12);
+  color:var(--cream);
+  font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:300;
+  outline:none;
+  transition:border-color .3s,background .3s;
+}
+.form-input:focus{
+  border-color:rgba(184,147,90,.4);
+  background:rgba(46,32,15,.5);
+}
+.form-input::placeholder{color:var(--muted);font-size:.85rem}
+textarea.form-input{resize:none;height:110px}
+.hours-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:2rem;
+  margin-top:3rem;padding-top:3rem;
+  border-top:1px solid rgba(184,147,90,.1);
+}
+.hours-block h4{
+  font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1rem;
+}
+.hours-line{
+  display:flex;justify-content:space-between;
+  font-size:.85rem;padding:.4rem 0;
+  border-bottom:1px solid rgba(184,147,90,.06);
+  color:var(--muted-light);
+}
+.hours-line:last-child{border-bottom:none}
+.hours-time{color:var(--cream)}
+
+/* SOCIAL */
+.social-strip{
+  display:flex;gap:1.5rem;margin-top:2.5rem;
+}
+.social-icon{
+  width:40px;height:40px;
+  border:1px solid rgba(184,147,90,.2);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);font-size:.8rem;
+  transition:all .3s;text-decoration:none;
+  font-family:'DM Sans',sans-serif;
+}
+.social-icon:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+
+/* FOOTER */
+footer{
+  background:var(--brown-deep);
+  border-top:1px solid rgba(184,147,90,.1);
+  padding:4rem 0 2rem;
+}
+.footer-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:3rem;margin-bottom:3rem;
+}
+.footer-brand{}
+.footer-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem;font-weight:300;letter-spacing:.25em;
+  color:var(--gold);margin-bottom:1rem;
+}
+.footer-tagline{
+  font-size:.82rem;color:var(--muted);
+  line-height:1.8;max-width:260px;
+}
+.footer-col h5{
+  font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.2rem;
+}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.7rem}
+.footer-col ul a{
+  font-size:.82rem;color:var(--muted);
+  text-decoration:none;transition:color .3s;
+}
+.footer-col ul a:hover{color:var(--cream)}
+.footer-bottom{
+  border-top:1px solid rgba(184,147,90,.08);
+  padding-top:2rem;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;
+}
+.footer-copy{font-size:.75rem;color:var(--muted);letter-spacing:.05em}
+.footer-social{display:flex;gap:1.2rem}
+.footer-social a{
+  font-size:.72rem;color:var(--muted);text-decoration:none;
+  letter-spacing:.1em;transition:color .3s;
+}
+.footer-social a:hover{color:var(--gold)}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .about-grid,.location-grid,.reviews-header{grid-template-columns:1fr}
+  .about-visual{height:400px;margin-bottom:2rem}
+  .menu-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  nav{padding:1.2rem 2rem}
+  .container{padding:0 2rem}
+}
+@media(max-width:768px){
+  .nav-links,.nav-cta{display:none}
+  .nav-hamburger{display:flex}
+  .hero-btns{flex-direction:column;align-items:center}
+  .menu-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .review-card{min-width:calc(100%)}
+  .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .g-item{grid-column:span 1 !important;grid-row:span 1 !important;height:200px}
+  .footer-grid{grid-template-columns:1fr}
+  section{padding:5rem 0}
+  .hours-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="progress"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div id="loader-logo">30 NORTH</div>
+  <div id="loader-bar"></div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">30 NORTH</a>
+  <ul class="nav-links">
+    <li><a href="#about">Story</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#location">Visit</a></li>
+  </ul>
+  <a href="#location" class="nav-cta">Reserve a Table</a>
+  <button class="nav-hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  
+  <!-- Steam animation -->
+  <div class="steam-wrap">
+    <div class="steam"></div>
+    <div class="steam"></div>
+    <div class="steam"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Specialty Coffee · Est. 2019 · Cairo</div>
+    <h1 class="hero-title">
+      Crafted <em>Beyond</em> Coffee.
+    </h1>
+    <p class="hero-sub">A specialty coffee experience designed for people who appreciate quality, atmosphere, and culture.</p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-primary"><span>Explore Menu</span></a>
+      <a href="#location" class="btn-ghost">Visit Us</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marquee">
+    <div class="marquee-item">Single Origin Beans</div>
+    <div class="marquee-item">Pour Over Precision</div>
+    <div class="marquee-item">Cold Brew Craft</div>
+    <div class="marquee-item">Expert Baristas</div>
+    <div class="marquee-item">Specialty Experience</div>
+    <div class="marquee-item">Artisanal Roasts</div>
+    <div class="marquee-item">30 North Cairo</div>
+    <div class="marquee-item">Single Origin Beans</div>
+    <div class="marquee-item">Pour Over Precision</div>
+    <div class="marquee-item">Cold Brew Craft</div>
+    <div class="marquee-item">Expert Baristas</div>
+    <div class="marquee-item">Specialty Experience</div>
+    <div class="marquee-item">Artisanal Roasts</div>
+    <div class="marquee-item">30 North Cairo</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-visual reveal">
+        <div class="about-img-main">
+          <div class="coffee-circle"></div>
+        </div>
+        <div class="about-img-accent">
+          <div class="about-img-accent-inner">
+            <div class="about-img-accent-num">30°</div>
+            <div class="about-img-accent-label">North Latitude</div>
+          </div>
+        </div>
+        <div class="about-dot"></div>
+      </div>
+
+      <div class="about-text">
+        <div class="section-label reveal">Our Story</div>
+        <h2 class="section-title reveal reveal-delay-1">Where Coffee<br>Meets <em>Culture</em></h2>
+        <div style="height:2rem"></div>
+        <p class="reveal reveal-delay-2">30 North was born from a single belief: that coffee should be more than a morning habit. It should be a ritual, an experience, a moment of pause in a relentless world.</p>
+        <p class="reveal reveal-delay-3">We source our beans from the world's finest micro-farms — Ethiopian highlands, Colombian valleys, Yemeni terraces — and roast each batch to unlock its truest character. Every cup tells a story of origin, craft, and intention.</p>
+
+        <div class="stats-row">
+          <div class="stat-item reveal reveal-delay-1">
+            <div class="stat-num"><span class="counter" data-target="40">0</span><span class="stat-suffix">+</span></div>
+            <div class="stat-label">Premium Origins</div>
+          </div>
+          <div class="stat-item reveal reveal-delay-2">
+            <div class="stat-num"><span class="counter" data-target="50">0</span><span class="stat-suffix">K+</span></div>
+            <div class="stat-label">Cups Served</div>
+          </div>
+          <div class="stat-item reveal reveal-delay-3">
+            <div class="stat-num"><span class="counter" data-target="8">0</span><span class="stat-suffix"></span></div>
+            <div class="stat-label">Expert Baristas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="container">
+    <div class="menu-header">
+      <div class="section-label reveal" style="justify-content:center">Signature Drinks</div>
+      <h2 class="section-title reveal reveal-delay-1">The <em>Menu</em></h2>
+    </div>
+
+    <div class="menu-grid">
+      <div class="menu-card reveal">
+        <div class="menu-card-top">
+          <div class="menu-icon">☕</div>
+          <span class="badge">Most Popular</span>
+        </div>
+        <div class="menu-name">Signature Espresso</div>
+        <div class="menu-desc">Double-pulled Ethiopian Yirgacheffe with velvety crema and notes of dark cherry and bergamot.</div>
+        <div class="menu-footer">
+          <div class="menu-price">65 EGP</div>
+          <div class="menu-order">Order</div>
+        </div>
+      </div>
+
+      <div class="menu-card reveal reveal-delay-1">
+        <div class="menu-card-top">
+          <div class="menu-icon">🧊</div>
+        </div>
+        <div class="menu-name">Cold Brew Reserve</div>
+        <div class="menu-desc">18-hour steep, Colombian Huila single-origin. Smooth, low-acid, dangerously drinkable.</div>
+        <div class="menu-footer">
+          <div class="menu-price">85 EGP</div>
+          <div class="menu-order">Order</div>
+        </div>
+      </div>
+
+      <div class="menu-card reveal reveal-delay-2">
+        <div class="menu-card-top">
+          <div class="menu-icon">🥛</div>
+          <span class="badge">Staff Pick</span>
+        </div>
+        <div class="menu-name">Spanish Latte</div>
+        <div class="menu-desc">Ristretto shots pulled over sweetened condensed milk, topped with silky microfoam.</div>
+        <div class="menu-footer">
+          <div class="menu-price">75 EGP</div>
+          <div class="menu-order">Order</div>
+        </div>
+      </div>
+
+      <div class="menu-card reveal reveal-delay-1">
+        <div class="menu-card-top">
+          <div class="menu-icon">⚗️</div>
+        </div>
+        <div class="menu-name">V60 Pour Over</div>
+        <div class="menu-desc">Manual precision pour with Kenyan AA beans. Bright acidity, floral nose, clean finish.</div>
+        <div class="menu-footer">
+          <div class="menu-price">90 EGP</div>
+          <div class="menu-order">Order</div>
+        </div>
+      </div>
+
+      <div class="menu-card reveal reveal-delay-2">
+        <div class="menu-card-top">
+          <div class="menu-icon">🍵</div>
+        </div>
+        <div class="menu-name">Ceremonial Matcha</div>
+        <div class="menu-desc">Grade-A Japanese matcha whisked to order with oat milk and a touch of honey.</div>
+        <div class="menu-footer">
+          <div class="menu-price">80 EGP</div>
+          <div class="menu-order">Order</div>
+        </div>
+      </div>
+
+      <div class="menu-card reveal reveal-delay-3">
+        <div class="menu-card-top">
+          <div class="menu-icon">🍮</div>
+          <span class="badge">New</span>
+        </div>
+        <div class="menu-name">Specialty Desserts</div>
+        <div class="menu-desc">Daily rotating pastries from our kitchen — croissants, tarts, and coffee-infused bites.</div>
+        <div class="menu-footer">
+          <div class="menu-price">45 EGP</div>
+          <div class="menu-order">Order</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="container">
+    <div class="reviews-header">
+      <div>
+        <div class="section-label reveal">What People Say</div>
+        <h2 class="section-title reveal reveal-delay-1">Voices of the <em>Community</em></h2>
+      </div>
+      <p class="reviews-tagline reveal reveal-delay-2">"Every great coffee moment deserves to be remembered."</p>
+    </div>
+
+    <div class="slider-wrap reveal">
+      <div class="slider-track" id="sliderTrack">
+        <div class="review-card">
+          <div class="review-stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star" style="opacity:.35">★</span>
+          </div>
+          <p class="review-text">"The coffee shop has good-quality beans — the experience alone is worth coming back for. A space unlike any other in Cairo."</p>
+          <div class="review-author">
+            <div class="author-avatar">OD</div>
+            <div>
+              <div class="author-name">Omar Dewedar</div>
+              <div class="author-role">Local Guide · Google Maps</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <p class="review-text">"Amazing. The food, the service, the atmosphere — everything is a perfect five. This is what a specialty café should feel like."</p>
+          <div class="review-author">
+            <div class="author-avatar">MM</div>
+            <div>
+              <div class="author-name">Mustafa Mohamed</div>
+              <div class="author-role">Local Guide · Google Maps</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <p class="review-text">"The V60 here changed how I think about coffee. The attention to detail in every cup is something I've only experienced at the best cafés globally."</p>
+          <div class="review-author">
+            <div class="author-avatar">LA</div>
+            <div>
+              <div class="author-name">Layla Amin</div>
+              <div class="author-role">Coffee Enthusiast</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slider-controls">
+      <button class="slider-btn" id="prevBtn">←</button>
+      <button class="slider-btn" id="nextBtn">→</button>
+      <div class="slider-dots">
+        <div class="dot active" data-index="0"></div>
+        <div class="dot" data-index="1"></div>
+        <div class="dot" data-index="2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="container">
+    <div class="gallery-header">
+      <div class="section-label reveal" style="justify-content:center">Atmosphere</div>
+      <h2 class="section-title reveal reveal-delay-1">The <em>Experience</em></h2>
+    </div>
+  </div>
+  <div style="padding:0 3rem" class="reveal">
+    <div class="gallery-grid">
+      <div class="g-item">
+        <div class="g-bg gb1">
+          <div class="g-art">
+            <svg width="200" height="200" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(184,147,90,0.25)" stroke-width="1"/>
+              <circle cx="100" cy="100" r="50" fill="none" stroke="rgba(184,147,90,0.15)" stroke-width="1"/>
+              <circle cx="100" cy="100" r="30" fill="rgba(46,32,15,0.8)" stroke="rgba(184,147,90,0.3)" stroke-width="1"/>
+              <circle cx="100" cy="100" r="15" fill="rgba(92,61,30,0.9)"/>
+              <circle cx="88" cy="88" r="5" fill="rgba(232,213,176,0.2)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="g-item">
+        <div class="g-bg gb2">
+          <div class="g-art">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <rect x="25" y="60" width="70" height="40" rx="4" fill="rgba(46,32,15,0.9)" stroke="rgba(184,147,90,0.3)" stroke-width="1"/>
+              <ellipse cx="60" cy="60" rx="35" ry="12" fill="rgba(92,61,30,0.8)" stroke="rgba(184,147,90,0.4)" stroke-width="1"/>
+              <path d="M85 60 Q95 40 85 35" fill="none" stroke="rgba(184,147,90,0.3)" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="g-item"><div class="g-bg gb3"></div></div>
+      <div class="g-item"><div class="g-bg gb4"></div></div>
+      <div class="g-item"><div class="g-bg gb5">
+        <div class="g-art">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(184,147,90,0.2)" stroke-width="1"/>
+            <circle cx="50" cy="50" r="20" fill="rgba(30,21,16,0.9)" stroke="rgba(184,147,90,0.3)" stroke-width="1"/>
+            <circle cx="50" cy="50" r="10" fill="rgba(92,61,30,0.8)"/>
+          </svg>
+        </div>
+      </div></div>
+      <div class="g-item"><div class="g-bg gb6"></div></div>
+      <div class="g-item"><div class="g-bg gb7">
+        <div class="g-art" style="padding:2rem">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-style:italic;color:rgba(184,147,90,0.3);text-align:center;letter-spacing:.1em">30 North</div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section id="location">
+  <div class="container">
+    <div class="section-label reveal">Find Us</div>
+    <h2 class="section-title reveal reveal-delay-1" style="margin-bottom:4rem">Visit the <em>Space</em></h2>
+
+    <div class="location-grid">
+      <div>
+        <div class="map-box reveal">
+          <div class="map-pin">
+            <div class="pin-circle">
+              <span class="pin-icon">📍</span>
+            </div>
+            <div class="pin-label">30 North, Cairo</div>
+          </div>
+        </div>
+
+        <div class="hours-row reveal">
+          <div class="hours-block">
+            <h4>Weekdays</h4>
+            <div class="hours-line"><span>Monday</span><span class="hours-time">8AM – 11PM</span></div>
+            <div class="hours-line"><span>Tuesday</span><span class="hours-time">8AM – 11PM</span></div>
+            <div class="hours-line"><span>Wed – Thu</span><span class="hours-time">8AM – 12AM</span></div>
+          </div>
+          <div class="hours-block">
+            <h4>Weekend</h4>
+            <div class="hours-line"><span>Friday</span><span class="hours-time">10AM – 1AM</span></div>
+            <div class="hours-line"><span>Saturday</span><span class="hours-time">9AM – 1AM</span></div>
+            <div class="hours-line"><span>Sunday</span><span class="hours-time">9AM – 11PM</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-1">
+        <p style="color:var(--muted-light);line-height:1.9;margin-bottom:2.5rem;font-size:.93rem">We'd love to hear from you — whether it's a reservation, a collaboration, or just a coffee conversation.</p>
+
+        <div class="contact-form">
+          <div class="form-group">
+            <label class="form-label">Your Name</label>
+            <input class="form-input" type="text" placeholder="Full name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" type="email" placeholder="hello@example.com"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-input" placeholder="Tell us about your visit or enquiry..."></textarea>
+          </div>
+          <button class="btn-primary" style="align-self:flex-start;border:none"><span>Send Message</span></button>
+        </div>
+
+        <div class="social-strip">
+          <a href="#" class="social-icon" aria-label="Instagram">IG</a>
+          <a href="#" class="social-icon" aria-label="Facebook">FB</a>
+          <a href="#" class="social-icon" aria-label="Twitter">TW</a>
+          <a href="#" class="social-icon" aria-label="TikTok">TK</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">30 NORTH</div>
+        <p class="footer-tagline">A specialty coffee experience crafted for those who believe every cup deserves intention.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Navigate</h5>
+        <ul>
+          <li><a href="#about">Our Story</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#location">Visit Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Coffee</h5>
+        <ul>
+          <li><a href="#">Espresso Bar</a></li>
+          <li><a href="#">Pour Over</a></li>
+          <li><a href="#">Cold Brew</a></li>
+          <li><a href="#">Specialty Menu</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Connect</h5>
+        <ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">TikTok</a></li>
+          <li><a href="#">Newsletter</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 30 North. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Careers</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// LOADER
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    const loader=document.getElementById('loader');
+    loader.style.transition='opacity .8s ease';
+    loader.style.opacity='0';
+    setTimeout(()=>{loader.style.display='none'},800);
+  },2200);
+});
+
+// CUSTOM CURSOR
+const cursor=document.getElementById('cursor');
+const ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+function animateRing(){
+  rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+document.querySelectorAll('a,button,.menu-card,.slider-btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    cursor.style.width='18px';cursor.style.height='18px';
+    ring.style.width='54px';ring.style.height='54px';
+  });
+  el.addEventListener('mouseleave',()=>{
+    cursor.style.width='10px';cursor.style.height='10px';
+    ring.style.width='38px';ring.style.height='38px';
+  });
+});
+
+// PROGRESS BAR
+const progress=document.getElementById('progress');
+window.addEventListener('scroll',()=>{
+  const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  progress.style.width=pct+'%';
+});
+
+// NAVBAR
+const navbar=document.getElementById('navbar');
+window.addEventListener('scroll',()=>{
+  navbar.classList.toggle('scrolled',window.scrollY>60);
+});
+
+// REVEAL ON SCROLL
+const revealEls=document.querySelectorAll('.reveal');
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.15});
+revealEls.forEach(el=>observer.observe(el));
+
+// COUNTER ANIMATION
+const counters=document.querySelectorAll('.counter');
+const counterObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting&&!e.target.done){
+      e.target.done=true;
+      const target=+e.target.dataset.target;
+      const dur=1800;const step=dur/60;
+      let current=0;
+      const inc=target/60;
+      const timer=setInterval(()=>{
+        current+=inc;
+        if(current>=target){current=target;clearInterval(timer);}
+        e.target.textContent=Math.round(current);
+      },step);
+    }
+  });
+},{threshold:.5});
+counters.forEach(c=>counterObs.observe(c));
+
+// TESTIMONIAL SLIDER
+const track=document.getElementById('sliderTrack');
+const dots=document.querySelectorAll('.dot');
+let current=0;
+const cards=track.querySelectorAll('.review-card');
+const total=cards.length;
+
+function goTo(i){
+  current=i;
+  // on mobile show 1, on desktop show 2
+  const w=window.innerWidth<768?100:50;
+  track.style.transform=`translateX(-${i*w}%)`;
+  dots.forEach((d,idx)=>d.classList.toggle('active',idx===i));
+}
+document.getElementById('nextBtn').addEventListener('click',()=>goTo((current+1)%total));
+document.getElementById('prevBtn').addEventListener('click',()=>goTo((current-1+total)%total));
+dots.forEach(d=>d.addEventListener('click',()=>goTo(+d.dataset.index)));
+setInterval(()=>goTo((current+1)%total),5000);
+
+// PARALLAX HERO
+window.addEventListener('scroll',()=>{
+  const heroContent=document.querySelector('.hero-content');
+  const scrolled=window.scrollY;
+  if(heroContent&&scrolled<window.innerHeight){
+    heroContent.style.transform=`translateY(${scrolled*.3}px)`;
+    heroContent.style.opacity=1-(scrolled/window.innerHeight)*1.5;
+  }
+});
+</script>
+</body>
+</html>
